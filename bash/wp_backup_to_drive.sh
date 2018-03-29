@@ -17,36 +17,6 @@
 # You can easily change variables to use this script for other backup uses.
 # IMPORTANT: Change variables and {PATH TO} to match your settings.
 
-# Test Internet Connection
-IS=`ping -c 5 4.2.2.2 | grep -c "64 bytes"`
-
-if (test "$IS" -gt "2") then
-        internet_conn="1"
-
-# Verify gdrive bin file exists
-file="/gdrive"
-if [ -f "$file" ]
-then
-	echo "Starting Backup Process...."
-else
-
-# If gdrive does not exist, download and install it: See https://github.com/prasmussen/gdrive
-if [ `getconf LONG_BIT` = "64" ]
-then
-        wget "https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA&export=download" -O /bin/gdrive
-        chmod 700 gdrive
-	gdrive list
-	clean
-	echo "Starting Backup Process...."
-else
-        wget "https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA&export=download" -O /bin/gdrive
-        chmod 700 gdrive
-	gdrive list
-	clean
-	echo "Starting Backup Process...."
-fi
-fi
-
 ################################################
 # Change server details to match your own server 
 ################################################
@@ -57,6 +27,9 @@ user=""
 password=""
 host="localhost" # change to ip or domain if applicable
 db_name="" # db_name="--all-databases" optional
+
+# gdrive executable location
+gdrivepath=""
 
 # Local backup path
 localbackuptmp="" # no trailingslashit
@@ -79,6 +52,36 @@ mailto=""
 #################################################################################
 # YOU SHOULD NOT MAKE CHANGES BELOW THIS POINT UNLESS YOU KNOW WHAT YOU ARE DOING
 #################################################################################
+
+# Test Internet Connection
+IS=`ping -c 5 4.2.2.2 | grep -c "64 bytes"`
+
+if (test "$IS" -gt "2") then
+        internet_conn="1"
+
+# Verify gdrive bin file exists
+file="$gdrivepath"
+if [ -f "$file" ]
+then
+	echo "Starting Backup Process...."
+else
+
+# If gdrive does not exist, download and install it: See https://github.com/prasmussen/gdrive
+if [ `getconf LONG_BIT` = "64" ]
+then
+        wget "https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA&export=download" -O /bin/gdrive
+        chmod 700 gdrive
+	gdrive list
+	clean
+	echo "Starting Backup Process...."
+else
+        wget "https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA&export=download" -O /bin/gdrive
+        chmod 700 gdrive
+	gdrive list
+	clean
+	echo "Starting Backup Process...."
+fi
+fi
 
 # Date prefix
 dateprefix=$(date +"%Y-%m-%d")
