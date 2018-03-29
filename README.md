@@ -1,6 +1,6 @@
 # TS-Backup to Google Drive
 
-<p style="text-align:center">![WordPress to Google Cloud Logo](https://themesurgeons.com/wp-to-gcloud.png)</p>
+<p style="text-align:center"><img src="https://themesurgeons.com/wp-to-gcloud.png" alt="WordPress to Google Drive Logo"</p>
 
 There's a lot to love about WordPress, but backups, syncing files and data, and migrations are not among them. Yes, there are plugins that you can download, and external services you can purchase that will accomplish the maintainance of your site. But plugins add load and impact performance, and exernal services can be pricey and not well supported.
 
