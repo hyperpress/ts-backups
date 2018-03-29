@@ -23,31 +23,31 @@
 
 # Database credentials 
 # YOU SHOULD MAKE SURE THAT FILE PERMISSIONS FOR THIS FILE ARE CHMOD 700
-user=""
-password=""
-host="" # change to ip or domain if applicable
-db_name="" # db_name="--all-databases" optional
+user="johnteague_surge"
+password="8Hrmr0qC"
+host="localhost" # change to ip or domain if applicable
+db_name="johnteague_surge" # db_name="--all-databases" optional
 
 # gdrive executable location
-localgdriveexecpath=""
+gdrivepath="gdrive"
 
 # Local backup path
-localbackuptmp="" # no trailingslashit
+localbackuptmp="/home/johnteague/tmp" # no trailingslashit
 
 # WordPress root folder path (or wp-content, etc.)
-wplocalpath=""
+wplocalpath="/home/johnteague/webapps/surgeons"
 
-# GDRIVE remote target backup path
-gdrivepath=""
+# GDRIVE target backup path
+gdrivepath="ts-backups/surgeons"
 
 # number of days you want to retain backup on Google Drive
 retainfor=7
 
 # Email from name
-fromname=""
+fromname="John Teague"
 
 # mailto address for status notifications
-mailto=""
+mailto="john@logicalphase.com"
 
 #For cleanup
 clean=rm
@@ -62,8 +62,8 @@ IS=`ping -c 5 4.2.2.2 | grep -c "64 bytes"`
 if (test "$IS" -gt "2") then
         internet_conn="1"
 
-# Verify gdrive bin file exists
-file="$localgdriveexecpath"
+# Verify gdrive bin file exists 
+file="~/gdrive"
 if [ -f "$file" ]
 then
 	echo "Starting Backup Process...."
@@ -96,7 +96,7 @@ backupage=$(date +"%Y-%m-%d" -d "-$retainfor days")
 sites=($(cd $wplocalpath; echo $PWD | rev | cut -d '/' -f 1 | rev))
 
 # Create local backup tmp folder if not exists
-mkdir -p $localbackuptmp
+mkdir -p /home/johnteague/tmp
 
 # Verify that remote backup target folder exists on gdrive
 backupid=$(gdrive list --no-header | grep $gdrivepath | grep dir | awk '{ print $1}')
@@ -115,19 +115,19 @@ for site in $sites; do
     fi 
 
     # Create the local backup directory if not  exists
-    if [ ! -e $localbackuptmp/$site ]; then
-        mkdir $localbackuptmp/$site
+    if [ ! -e /home/johnteague/tmp/$site ]; then
+        mkdir /home/johnteague/tmp/$site
     fi
 
     # Enter WordPress directory
     cd $wplocalpath/
   
     # Create WordPress files backup
-    tar -czf $localbackuptmp/$SITENAME/$site/$dateprefix-$site.tar.gz .
+    tar -czf /home/johnteague/tmp/$SITENAME/$site/$dateprefix-$site.tar.gz .
 
  
     # Export and create backup of MySQL database (You could pass additional mysql options here)
-    mysqldump --user=$user --password=$password  --events --ignore-table=mysql.event --host=$host $db_name | gzip > $localbackuptmp/$site/$dateprefix-$site.sql.gz
+    mysqldump --user=$user --password=$password  --events --ignore-table=mysql.event --host=$host $db_name | gzip > /home/johnteague/tmp/$site/$dateprefix-$site.sql.gz
 
     # Get current folder ID/NAME
     sitefolderid=$(gdrive list --no-header | grep $site | grep dir | awk '{ print $1}')
@@ -139,34 +139,34 @@ for site in $sites; do
     fi
 
     # Upload WordPress files .tar.gz
-    gdrive upload --parent $sitefolderid --delete $localbackuptmp/$site/$dateprefix-$site.tar.gz
+    gdrive upload --parent $sitefolderid --delete /home/johnteague/tmp/$site/$dateprefix-$site.tar.gz
     
     # Upload WordPress Mysql database .gz
-    gdrive upload --parent $sitefolderid --delete $localbackuptmp/$site/$dateprefix-$site.sql.gz
+    gdrive upload --parent $sitefolderid --delete /home/johnteague/tmp/$site/$dateprefix-$site.sql.gz
 
     # Log WordPress Files amd Fprmat mailto Results
-    echo "Hi," >> $localbackuptmp/log01
-    echo " " >> $localbackuptmp/log01
-    gdrive list --no-header | grep $dateprefix-$site.tar.gz | awk '{ print $1}' > $localbackuptmp/web_log.txt
-    [ -s $localbackuptmp/web_log.txt ] && echo "WordPress Files Backup Succeeded.. File Name $dateprefix-$site.tar.gz" >> $localbackuptmp/log01 || echo " Web Server Data Backup Error..!!"  >> $localbackuptmp/log01
+    echo "Hi," >> /home/johnteague/tmp/log01
+    echo " " >> /home/johnteague/tmp/log01
+    gdrive list --no-header | grep $dateprefix-$site.tar.gz | awk '{ print $1}' > /home/johnteague/tmp/web_log.txt
+    [ -s /home/johnteague/tmp/web_log.txt ] && echo "WordPress Files Backup Succeeded.. File Name $dateprefix-$site.tar.gz" >> /home/johnteague/tmp/log01 || echo " Web Server Data Backup Error..!!"  >> /home/johnteague/tmp/log01
    
     # Log Database Output and Format mailto Results
-    gdrive list --no-header | grep $dateprefix-$site.sql.gz | awk '{ print $1}' > $localbackuptmp/database_log.txt
-    [ -s $localbackuptmp/database_log.txt ] && echo "WordPress Database Backup Succeeded.. File Name - $dateprefix-$site.sql.gz" >> $localbackuptmp/log01 || echo " Database Backup Error..!!" >> $localbackuptmp/log01
+    gdrive list --no-header | grep $dateprefix-$site.sql.gz | awk '{ print $1}' > /home/johnteague/tmp/database_log.txt
+    [ -s /home/johnteague/tmp/database_log.txt ] && echo "WordPress Database Backup Succeeded.. File Name - $dateprefix-$site.sql.gz" >> /home/johnteague/tmp/log01 || echo " Database Backup Error..!!" >> /home/johnteague/tmp/log01
    
-    echo " " >> $localbackuptmp/log01
-    echo " " >> $localbackuptmp/log01 
-    echo "Thanks," >> $localbackuptmp/log01
-    echo "$fromname"  >> $localbackuptmp/log01
+    echo " " >> /home/johnteague/tmp/log01
+    echo " " >> /home/johnteague/tmp/log01 
+    echo "Thanks," >> /home/johnteague/tmp/log01
+    echo "YOUR NAME"  >> /home/johnteague/tmp/log01
 
     # Backup Status - Send Mail
-    cat -v $localbackuptmp/log01 | mail -s "WordPress Backup Status Log - $(date)" $mailto
+    cat -v /home/johnteague/tmp/log01 | mail -s "WordPress Backup Status Log - $(date)" $mailto
 
     # cleanup up the tmp files
-    chmod -R 755 $localbackuptmp/*
-    $clean $localbackuptmp/files_log.txt 
-    $clean $localbackuptmp/database_log.txt 
-    $clean $localbackuptmp/log01 
+    chmod -R 755 /home/johnteague/tmp/*
+    $clean /home/johnteague/tmp/web_log.txt 
+    $clean /home/johnteague/tmp/database_log.txt 
+    $clean /home/johnteague/tmp/log01 
 
 done
     # Internet Connection Error
