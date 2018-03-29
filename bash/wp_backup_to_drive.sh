@@ -25,11 +25,11 @@
 # YOU SHOULD MAKE SURE THAT FILE PERMISSIONS FOR THIS FILE ARE CHMOD 700
 user=""
 password=""
-host="localhost" # change to ip or domain if applicable
+host="" # change to ip or domain if applicable
 db_name="" # db_name="--all-databases" optional
 
 # gdrive executable location
-gdrivepath=""
+localgdriveexecpath=""
 
 # Local backup path
 localbackuptmp="" # no trailingslashit
@@ -37,7 +37,7 @@ localbackuptmp="" # no trailingslashit
 # WordPress root folder path (or wp-content, etc.)
 wplocalpath=""
 
-# GDRIVE target backup path
+# GDRIVE remote target backup path
 gdrivepath=""
 
 # number of days you want to retain backup on Google Drive
@@ -48,6 +48,9 @@ fromname=""
 
 # mailto address for status notifications
 mailto=""
+
+#For cleanup
+clean=rm
 
 #################################################################################
 # YOU SHOULD NOT MAKE CHANGES BELOW THIS POINT UNLESS YOU KNOW WHAT YOU ARE DOING
@@ -60,7 +63,7 @@ if (test "$IS" -gt "2") then
         internet_conn="1"
 
 # Verify gdrive bin file exists
-file="$gdrivepath"
+file="$localgdriveexecpath"
 if [ -f "$file" ]
 then
 	echo "Starting Backup Process...."
@@ -94,9 +97,6 @@ sites=($(cd $wplocalpath; echo $PWD | rev | cut -d '/' -f 1 | rev))
 
 # Create local backup tmp folder if not exists
 mkdir -p $localbackuptmp
-
-#For cleanup
-clean=rm
 
 # Verify that remote backup target folder exists on gdrive
 backupid=$(gdrive list --no-header | grep $gdrivepath | grep dir | awk '{ print $1}')
@@ -157,7 +157,7 @@ for site in $sites; do
     echo " " >> $localbackuptmp/log01
     echo " " >> $localbackuptmp/log01 
     echo "Thanks," >> $localbackuptmp/log01
-    echo "YOUR NAME"  >> $localbackuptmp/log01
+    echo "$fromname"  >> $localbackuptmp/log01
 
     # Backup Status - Send Mail
     cat -v $localbackuptmp/log01 | mail -s "WordPress Backup Status Log - $(date)" $mailto
