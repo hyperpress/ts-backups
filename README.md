@@ -1,19 +1,21 @@
+### TOC
+- [TS-Backup to Google Drive](#ts-backup-to-google-drive)
+  * [Introduction](#introduction)
+    + [wp_backup_to_drive.sh | Backup WordPress to Google Drive](#wp-backup-to-drivesh---backup-wordpress-to-google-drive)
+
 # TS-Backup to Google Drive
 
 <p style="text-align:center"><img src="https://themesurgeons.com/wp-to-gcloud.png" alt="WordPress to Google Drive Logo"</p>
 
 A set of bash scripts for backing up files and data to cloud storage services like Google Drive and Cloud Storage. I will continue to add more utility scripts to make life easier. Feel free to send pull requests to add yours if you like, or fork your own copy. Contributions are welcome and appreciated.
-
-- [Why all the fuss?](#why-all-the-fuss-)
-  * [wp_backup_to_drive.sh | Backing up WordPress to Google Drive.](#wp-backup-to-drivesh-full-file-and-mysql-database-export-backups-stored-on-google-drive)
   
-## Why all the fuss?
+## Introduction
 
 There's a lot to love about WordPress, but backups, syncing files and data, and migrations are not among them. Yes, there are plugins that you can download, and external services you can purchase that will accomplish the maintainance of your site. But plugins add load and impact performance, and exernal services can be pricey and not well supported.
 
 My goal is to create scripts and publish scripts that avoid all that, and are generic enough to to refactor for any type of MySQL and file data backups. They are scripts we use here at Theme Surgeons for our hosting customers and we love to share them.
 
-### wp_backup_to_drive.sh Full file and MySQL database export backups stored on Google Drive.
+### wp_backup_to_drive.sh | Backup WordPress to Google Drive
 
 This script creates a backup target WordPress files and MySQL database and uploads them to your Google Drive. Files are retained for 7 days by default (highly configurable).
 
