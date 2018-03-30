@@ -1,9 +1,6 @@
-<div style="width:350px; height:auto; padding:10px; margin-right:20px 10px; border:1px solid #222; float:right;">
-#### Table of Contents
 - [TS-Backup to Google Drive](#ts-backup-to-google-drive)
   * [Introduction](#introduction)
     + [Backup WordPress to Google Drive](#backup-wordpress-to-google-drive)
-</div>
 
 # TS-Backup to Google Drive
 
