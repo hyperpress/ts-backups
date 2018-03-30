@@ -3,6 +3,9 @@
 <p style="text-align:center"><img src="https://themesurgeons.com/wp-to-gcloud.png" alt="WordPress to Google Drive Logo"</p>
 
 A set of bash scripts for backing up files and data to cloud storage services like Google Drive and Cloud Storage. I will continue to add more utility scripts to make life easier. Feel free to send pull requests to add yours if you like, or fork your own copy. Contributions are welcome and appreciated.
+
+- [Why all the fuss?](#why-all-the-fuss-)
+  * [wp_backup_to_drive.sh Full file and MySQL database export backups stored on Google Drive.](#wp-backup-to-drivesh-full-file-and-mysql-database-export-backups-stored-on-google-drive)
   
 ## Why all the fuss?
 
