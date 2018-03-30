@@ -2,7 +2,7 @@
 #### Table of Contents
 - [TS-Backup to Google Drive](#ts-backup-to-google-drive)
   * [Introduction](#introduction)
-    + [Backup WordPress to Google Drive | wp_backup_to_drive](#backup-wordpress-to-google-drive---wp-backup-to-drive)
+    + [Backup WordPress to Google Drive](#backup-wordpress-to-google-drive)
 </div>
 
 # TS-Backup to Google Drive
@@ -17,7 +17,9 @@ There's a lot to love about WordPress, but backups, syncing files and data, and 
 
 My goal is to create scripts and publish scripts that avoid all that, and are generic enough to to refactor for any type of MySQL and file data backups. They are scripts we use here at Theme Surgeons for our hosting customers and we love to share them.
 
-### Backup WordPress to Google Drive | wp_backup_to_drive
+### Backup WordPress to Google Drive
+
+file: wp_bakcup_to_drive.sh
 
 This script creates a backup target WordPress files and MySQL database and uploads them to your Google Drive. Files are retained for 7 days by default (highly configurable).
 
