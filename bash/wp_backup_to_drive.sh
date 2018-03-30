@@ -29,7 +29,7 @@ host="" # change to ip or domain if applicable
 db_name="" # db_name="--all-databases" optional
 
 # gdrive executable location
-localgdriveexecpath=""
+gdrivebin=""
 
 # Local backup path
 localbackuptmp="" # no trailingslashit
@@ -37,7 +37,7 @@ localbackuptmp="" # no trailingslashit
 # WordPress root folder path (or wp-content, etc.)
 wplocalpath=""
 
-# GDRIVE remote target backup path
+# GDRIVE target backup path
 gdrivepath=""
 
 # number of days you want to retain backup on Google Drive
@@ -62,8 +62,8 @@ IS=`ping -c 5 4.2.2.2 | grep -c "64 bytes"`
 if (test "$IS" -gt "2") then
         internet_conn="1"
 
-# Verify gdrive bin file exists
-file="$localgdriveexecpath"
+# Verify gdrive bin file exists 
+file="$gdrivebin"
 if [ -f "$file" ]
 then
 	echo "Starting Backup Process...."
@@ -72,14 +72,14 @@ else
 # If gdrive does not exist, download and install it: See https://github.com/prasmussen/gdrive
 if [ `getconf LONG_BIT` = "64" ]
 then
-        wget "https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA&export=download" -O /bin/gdrive
-        chmod 700 gdrive
+        wget "https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA&export=download" -O $gdrivebin
+        chmod 700 $gdrivebin
 	gdrive list
 	clean
 	echo "Starting Backup Process...."
 else
-        wget "https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA&export=download" -O /bin/gdrive
-        chmod 700 gdrive
+        wget "https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA&export=download" -O $gdrivebin
+        chmod 700 $gdrivebin
 	gdrive list
 	clean
 	echo "Starting Backup Process...."
@@ -99,19 +99,19 @@ sites=($(cd $wplocalpath; echo $PWD | rev | cut -d '/' -f 1 | rev))
 mkdir -p $localbackuptmp
 
 # Verify that remote backup target folder exists on gdrive
-backupid=$(gdrive list --no-header | grep $gdrivepath | grep dir | awk '{ print $1}')
+backupid=$($gdrivebin list --no-header | grep $gdrivepath | grep dir | awk '{ print $1}')
     if [ -z "$backupid" ]; then
         gdrive mkdir $gdrivepath
-        backupid=$(gdrive list --no-header | grep $gdrivepath | grep dir | awk '{ print $1}')
+        backupid=$($gdrivebin list --no-header | grep $gdrivepath | grep dir | awk '{ print $1}')
     fi
 
 # Loop through and identify sites all directories
 for site in $sites; do    
    
     # Get directory ID/NAME and prune old backups if they exist
-    oldbackup=$(gdrive list --no-header | grep $backupage-$site | grep dir | awk '{ print $1}')
+    oldbackup=$($gdrivebin list --no-header | grep $backupage-$site | grep dir | awk '{ print $1}')
     if [ ! -z "$oldbackup" ]; then
-        gdrive delete $oldbackup
+        $gdrivebin delete $oldbackup
     fi 
 
     # Create the local backup directory if not  exists
@@ -130,34 +130,34 @@ for site in $sites; do
     mysqldump --user=$user --password=$password  --events --ignore-table=mysql.event --host=$host $db_name | gzip > $localbackuptmp/$site/$dateprefix-$site.sql.gz
 
     # Get current folder ID/NAME
-    sitefolderid=$(gdrive list --no-header | grep $site | grep dir | awk '{ print $1}')
+    sitefolderid=$($gdrivebin list --no-header | grep $site | grep dir | awk '{ print $1}')
 
     # Create GDRIVE target folder if not exists
     if [ -z "$sitefolderid" ]; then
-        gdrive mkdir --parent $backupid $site
-        sitefolderid=$(gdrive list --no-header | grep $site | grep dir | awk '{ print $1}')
+        $gdrivebin mkdir --parent $backupid $site
+        sitefolderid=$($gdrivebin list --no-header | grep $site | grep dir | awk '{ print $1}')
     fi
 
     # Upload WordPress files .tar.gz
-    gdrive upload --parent $sitefolderid --delete $localbackuptmp/$site/$dateprefix-$site.tar.gz
+    $gdrivebin upload --parent $sitefolderid --delete $localbackuptmp/$site/$dateprefix-$site.tar.gz
     
     # Upload WordPress Mysql database .gz
-    gdrive upload --parent $sitefolderid --delete $localbackuptmp/$site/$dateprefix-$site.sql.gz
+    $gdrivebin upload --parent $sitefolderid --delete $localbackuptmp/$site/$dateprefix-$site.sql.gz
 
     # Log WordPress Files amd Fprmat mailto Results
     echo "Hi," >> $localbackuptmp/log01
     echo " " >> $localbackuptmp/log01
-    gdrive list --no-header | grep $dateprefix-$site.tar.gz | awk '{ print $1}' > $localbackuptmp/web_log.txt
+    $gdrivebin list --no-header | grep $dateprefix-$site.tar.gz | awk '{ print $1}' > $localbackuptmp/web_log.txt
     [ -s $localbackuptmp/web_log.txt ] && echo "WordPress Files Backup Succeeded.. File Name $dateprefix-$site.tar.gz" >> $localbackuptmp/log01 || echo " Web Server Data Backup Error..!!"  >> $localbackuptmp/log01
    
     # Log Database Output and Format mailto Results
-    gdrive list --no-header | grep $dateprefix-$site.sql.gz | awk '{ print $1}' > $localbackuptmp/database_log.txt
+    $gdrivebin list --no-header | grep $dateprefix-$site.sql.gz | awk '{ print $1}' > $localbackuptmp/database_log.txt
     [ -s $localbackuptmp/database_log.txt ] && echo "WordPress Database Backup Succeeded.. File Name - $dateprefix-$site.sql.gz" >> $localbackuptmp/log01 || echo " Database Backup Error..!!" >> $localbackuptmp/log01
    
-    echo " " >> $localbackuptmp/log01
-    echo " " >> $localbackuptmp/log01 
-    echo "Thanks," >> $localbackuptmp/log01
-    echo "$fromname"  >> $localbackuptmp/log01
+    echo " " >> $localbackuptmp/tmp/log01
+    echo " " >> $localbackuptmp/tmp/log01 
+    echo "Thanks," >> $localbackuptmp/tmp/log01
+    echo "YOUR NAME"  >> $localbackuptmp/tmp/log01
 
     # Backup Status - Send Mail
     cat -v $localbackuptmp/log01 | mail -s "WordPress Backup Status Log - $(date)" $mailto
